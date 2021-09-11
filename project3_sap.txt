@@ -1,0 +1,7 @@
+SQL> 
+SQL> start C:\Users\sebas\Downloads\project2_sap-1.sql
+SQL> --Sebastian Poliuc
+SQL> --INSY 3304
+SQL> --Project 2
+SQL> 
+SQL> spool 'C:\Users\sebas\iCloudDrive\Documents\project2_sap.txt'

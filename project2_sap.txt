@@ -1,0 +1,911 @@
+SQL> set echo on
+SQL> 
+SQL> --Part 1
+SQL> 
+SQL> DROP TABLE RESDETAIL_sap;
+
+Table dropped.
+
+SQL> DROP TABLE RESERVATION_sap;
+
+Table dropped.
+
+SQL> DROP TABLE CUSTOMER_sap;
+
+Table dropped.
+
+SQL> DROP TABLE AGENT_sap;
+
+Table dropped.
+
+SQL> DROP TABLE ROOM_sap;
+
+Table dropped.
+
+SQL> DROP TABLE ROOMTYPE_sap;
+
+Table dropped.
+
+SQL> DROP TABLE RATETYPE_sap;
+
+Table dropped.
+
+SQL> DROP TABLE CUSTTYPE_sap;
+
+Table dropped.
+
+SQL> DROP TABLE AGENTTYPE_sap;
+
+Table dropped.
+
+SQL> 
+SQL> 
+SQL> CREATE TABLE AGENTTYPE_sap (
+  2  AgentType	     VARCHAR(2),
+  3  AgentDesc	     VARCHAR(20)     NOT NULL,
+  4  PRIMARY KEY (AgentType)
+  5  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE CUSTTYPE_sap (
+  2  CustType	     CHAR(1),
+  3  CustDesc	     VARCHAR(20)     NOT NULL,
+  4  PRIMARY KEY (CustType)
+  5  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE RATETYPE_sap (
+  2  RateType	     CHAR(1),
+  3  RateDesc	     VARCHAR(20)     NOT NULL,
+  4  PRIMARY KEY (RateType)
+  5  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE ROOMTYPE_sap (
+  2  RoomType	     VARCHAR(2),
+  3  RoomDesc	     VARCHAR(20)     NOT NULL,
+  4  PRIMARY KEY (RoomType)
+  5  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE ROOM_sap (
+  2  RoomNum	     NUMBER(3),
+  3  RoomType	     VARCHAR(2)      NOT NULL,
+  4  PRIMARY KEY (RoomNum),
+  5  FOREIGN KEY (RoomType) REFERENCES ROOMTYPE_sap
+  6  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE AGENT_sap (
+  2  AgentID	     NUMBER(2),
+  3  AgentFName      VARCHAR(20) NOT NULL,
+  4  AgentLName      VARCHAR(20) NOT NULL,
+  5  AgentType	     VARCHAR(2) NOT NULL,
+  6  PRIMARY KEY (AgentID),
+  7  FOREIGN KEY (AgentType) REFERENCES AGENTTYPE_sap
+  8  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE CUSTOMER_sap (
+  2  CustID	     NUMBER(3),
+  3  CustFName	     VARCHAR(20) NOT NULL,
+  4  CustLName	     VARCHAR(20) NOT NULL,
+  5  CustPhone	     NUMBER(10),
+  6  CustType	     CHAR(1) NOT NULL,
+  7  LoyaltyID	     NUMBER(3),
+  8  PRIMARY KEY (CustID),
+  9  FOREIGN KEY (CustType) REFERENCES CUSTTYPE_sap
+ 10  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE RESERVATION_sap (
+  2  ResNum	     NUMBER(4) NOT NULL,
+  3  CheckIn	     DATE NOT NULL,
+  4  CheckOut	     DATE NOT NULL,
+  5  CustID	     NUMBER(3) NOT NULL,
+  6  AgentID	     NUMBER(2) NOT NULL,
+  7  GuestCount      NUMBER(2) NOT NULL,
+  8  RateType	     CHAR(1) NOT NULL,
+  9  PRIMARY KEY (ResNum),
+ 10  FOREIGN KEY (CustID) REFERENCES CUSTOMER_sap,
+ 11  FOREIGN KEY (AgentID) REFERENCES AGENT_sap,
+ 12  FOREIGN KEY (RateType) REFERENCES RATETYPE_sap
+ 13  );
+
+Table created.
+
+SQL> 
+SQL> CREATE TABLE RESDETAIL_sap (
+  2  ResNum	     NUMBER(4),
+  3  RoomNum	     NUMBER(3) NOT NULL,
+  4  RateAmt	     NUMBER(3) NOT NULL,
+  5  PRIMARY KEY (ResNum, RoomNum),
+  6  FOREIGN KEY (ResNum) REFERENCES RESERVATION_sap,
+  7  FOREIGN KEY (RoomNum) REFERENCES ROOM_sap
+  8  );
+
+Table created.
+
+SQL> 
+SQL> DESCRIBE	     AGENTTYPE_sap ;
+ Name                                                                                Null?    Type
+ ----------------------------------------------------------------------------------- -------- --------------------------------------------------------
+ AGENTTYPE                                                                           NOT NULL VARCHAR2(2)
+ AGENTDESC                                                                           NOT NULL VARCHAR2(20)
+
+SQL> DESCRIBE	     CUSTTYPE_sap ;
+ Name                                                                                Null?    Type
+ ----------------------------------------------------------------------------------- -------- --------------------------------------------------------
+ CUSTTYPE                                                                            NOT NULL CHAR(1)
+ CUSTDESC                                                                            NOT NULL VARCHAR2(20)
+
+SQL> DESCRIBE	     RATETYPE_sap ;
+ Name                                                                                Null?    Type
+ ----------------------------------------------------------------------------------- -------- --------------------------------------------------------
+ RATETYPE                                                                            NOT NULL CHAR(1)
+ RATEDESC                                                                            NOT NULL VARCHAR2(20)
+
+SQL> DESCRIBE	     ROOMTYPE_sap ;
+ Name                                                                                Null?    Type
+ ----------------------------------------------------------------------------------- -------- --------------------------------------------------------
+ ROOMTYPE                                                                            NOT NULL VARCHAR2(2)
+ ROOMDESC                                                                            NOT NULL VARCHAR2(20)
+
+SQL> DESCRIBE	     ROOM_sap ;
+ Name                                                                                Null?    Type
+ ----------------------------------------------------------------------------------- -------- --------------------------------------------------------
+ ROOMNUM                                                                             NOT NULL NUMBER(3)
+ ROOMTYPE                                                                            NOT NULL VARCHAR2(2)
+
+SQL> DESCRIBE	     AGENT_sap ;
+ Name                                                                                Null?    Type
+ ----------------------------------------------------------------------------------- -------- --------------------------------------------------------
+ AGENTID                                                                             NOT NULL NUMBER(2)
+ AGENTFNAME                                                                          NOT NULL VARCHAR2(20)
+ AGENTLNAME                                                                          NOT NULL VARCHAR2(20)
+ AGENTTYPE                                                                           NOT NULL VARCHAR2(2)
+
+SQL> DESCRIBE	     CUSTOMER_sap ;
+ Name                                                                                Null?    Type
+ ----------------------------------------------------------------------------------- -------- --------------------------------------------------------
+ CUSTID                                                                              NOT NULL NUMBER(3)
+ CUSTFNAME                                                                           NOT NULL VARCHAR2(20)
+ CUSTLNAME                                                                           NOT NULL VARCHAR2(20)
+ CUSTPHONE                                                                                    NUMBER(10)
+ CUSTTYPE                                                                            NOT NULL CHAR(1)
+ LOYALTYID                                                                                    NUMBER(3)
+
+SQL> DESCRIBE	     RESERVATION_sap ;
+ Name                                                                                Null?    Type
+ ----------------------------------------------------------------------------------- -------- --------------------------------------------------------
+ RESNUM                                                                              NOT NULL NUMBER(4)
+ CHECKIN                                                                             NOT NULL DATE
+ CHECKOUT                                                                            NOT NULL DATE
+ CUSTID                                                                              NOT NULL NUMBER(3)
+ AGENTID                                                                             NOT NULL NUMBER(2)
+ GUESTCOUNT                                                                          NOT NULL NUMBER(2)
+ RATETYPE                                                                            NOT NULL CHAR(1)
+
+SQL> DESCRIBE	     RESDETAIL_sap ;
+ Name                                                                                Null?    Type
+ ----------------------------------------------------------------------------------- -------- --------------------------------------------------------
+ RESNUM                                                                              NOT NULL NUMBER(4)
+ ROOMNUM                                                                             NOT NULL NUMBER(3)
+ RATEAMT                                                                             NOT NULL NUMBER(3)
+
+SQL> 
+SQL> --Part 2, insert statements for all data
+SQL> 
+SQL> INSERT INTO AGENTTYPE_sap
+  2  VALUES ('FD', 'Front Desk') ;
+
+1 row created.
+
+SQL> INSERT INTO AGENTTYPE_sap
+  2  VALUES ('T', 'Telephone') ;
+
+1 row created.
+
+SQL> INSERT INTO AGENTTYPE_sap
+  2  VALUES ('RC' , 'Online Res Center') ;
+
+1 row created.
+
+SQL> 
+SQL> COMMIT ;
+
+Commit complete.
+
+SQL> 
+SQL> INSERT INTO CUSTTYPE_sap
+  2  VALUES ('C', 'Corporate') ;
+
+1 row created.
+
+SQL> INSERT INTO CUSTTYPE_sap
+  2  VALUES ('I', 'Individual') ;
+
+1 row created.
+
+SQL> 
+SQL> COMMIT ;
+
+Commit complete.
+
+SQL> 
+SQL> INSERT INTO RATETYPE_sap
+  2  VALUES ('C', 'Corporate') ;
+
+1 row created.
+
+SQL> INSERT INTO RATETYPE_sap
+  2  VALUES ('S', 'Standard') ;
+
+1 row created.
+
+SQL> INSERT INTO RATETYPE_sap
+  2  VALUES ('W', 'Weekend') ;
+
+1 row created.
+
+SQL> 
+SQL> COMMIT ;
+
+Commit complete.
+
+SQL> 
+SQL> INSERT INTO ROOMTYPE_sap
+  2  VALUES ('K', 'King Bed') ;
+
+1 row created.
+
+SQL> INSERT INTO ROOMTYPE_sap
+  2  VALUES ('D', '2 Double Beds') ;
+
+1 row created.
+
+SQL> INSERT INTO ROOMTYPE_sap
+  2  VALUES ('KS', 'King Suite') ;
+
+1 row created.
+
+SQL> 
+SQL> COMMIT ;
+
+Commit complete.
+
+SQL> 
+SQL> INSERT INTO ROOM_sap
+  2  VALUES (224, 'K') ;
+
+1 row created.
+
+SQL> INSERT INTO ROOM_sap
+  2  VALUES (225, 'D') ;
+
+1 row created.
+
+SQL> INSERT INTO ROOM_sap
+  2  VALUES (305, 'D') ;
+
+1 row created.
+
+SQL> INSERT INTO ROOM_sap
+  2  VALUES (409, 'D') ;
+
+1 row created.
+
+SQL> INSERT INTO ROOM_sap
+  2  VALUES (320, 'D') ;
+
+1 row created.
+
+SQL> INSERT INTO ROOM_sap
+  2  VALUES (321, 'K') ;
+
+1 row created.
+
+SQL> INSERT INTO ROOM_sap
+  2  VALUES (302, 'K') ;
+
+1 row created.
+
+SQL> INSERT INTO ROOM_sap
+  2  VALUES (501, 'KS') ;
+
+1 row created.
+
+SQL> INSERT INTO ROOM_sap
+  2  VALUES (502, 'KS') ;
+
+1 row created.
+
+SQL> 
+SQL> COMMIT ;
+
+Commit complete.
+
+SQL> 
+SQL> INSERT INTO AGENT_sap
+  2  VALUES (20, 'Megan', 'Smith', 'FD') ;
+
+1 row created.
+
+SQL> INSERT INTO AGENT_sap
+  2  VALUES (5, 'Janice', 'May', 'T') ;
+
+1 row created.
+
+SQL> INSERT INTO AGENT_sap
+  2  VALUES (14, 'John', 'King', 'RC') ;
+
+1 row created.
+
+SQL> INSERT INTO AGENT_sap
+  2  VALUES (28, 'Ray', 'Schultz', 'T') ;
+
+1 row created.
+
+SQL> 
+SQL> COMMIT ;
+
+Commit complete.
+
+SQL> 
+SQL> INSERT INTO CUSTOMER_sap
+  2  VALUES(85, 'Wesley', 'Tanner', 8175551193, 'C', 323) ;
+
+1 row created.
+
+SQL> INSERT INTO CUSTOMER_sap
+  2  VALUES(100, 'Breanna', 'Rhodes', 2145559191, 'I', 129) ;
+
+1 row created.
+
+SQL> INSERT INTO CUSTOMER_sap
+  2  VALUES(15, 'Jeff', 'Miner', NULL, 'I', NULL) ;
+
+1 row created.
+
+SQL> INSERT INTO CUSTOMER_sap
+  2  VALUES(77, 'Kim', 'Jackson', 8175554911, 'C', 210) ;
+
+1 row created.
+
+SQL> INSERT INTO CUSTOMER_sap
+  2  VALUES(119, 'Mary', 'Vaughn', 8175552334, 'I', 118) ;
+
+1 row created.
+
+SQL> INSERT INTO CUSTOMER_sap
+  2  VALUES(97, 'Chris', 'Mancha', 4695553440, 'I', 153) ;
+
+1 row created.
+
+SQL> INSERT INTO CUSTOMER_sap
+  2  VALUES(28, 'Renee', 'Walker', 2145559285, 'I', 135) ;
+
+1 row created.
+
+SQL> INSERT INTO CUSTOMER_sap
+  2  VALUES(23, 'Shelby', 'Day', NULL, 'I', NULL) ;
+
+1 row created.
+
+SQL> 
+SQL> COMMIT ;
+
+Commit complete.
+
+SQL> 
+SQL> INSERT INTO RESERVATION_sap
+  2  VALUES (1001, '5-SEP-2020', '7-SEP-2020', 85, 20, 2, 'C') ;
+
+1 row created.
+
+SQL> INSERT INTO RESERVATION_sap
+  2  VALUES (1002, '1-SEP-2020', '10-SEP-2020', 100, 5, 4, 'S') ;
+
+1 row created.
+
+SQL> INSERT INTO RESERVATION_sap
+  2  VALUES (1003, '9-SEP-2020', '11-SEP2020', 15, 14, 3, 'W') ;
+
+1 row created.
+
+SQL> INSERT INTO RESERVATION_sap
+  2  VALUES (1004, '12-SEP-2020', '14-SEP-2020', 77, 28, 4, 'C') ;
+
+1 row created.
+
+SQL> INSERT INTO RESERVATION_sap
+  2  VALUES (1005, '15-SEP-2020', '18-SEP-2020', 119, 20, 1, 'S') ;
+
+1 row created.
+
+SQL> INSERT INTO RESERVATION_sap
+  2  VALUES (1006, '24-SEP-2020', '26-SEP-2020', 97, 14, 2, 'W') ;
+
+1 row created.
+
+SQL> INSERT INTO RESERVATION_sap
+  2  VALUES (1007, '20-SEP-2020', '25-SEP-2020', 100, 20, 2, 'S') ;
+
+1 row created.
+
+SQL> INSERT INTO RESERVATION_sap
+  2  VALUES (1008, '1-OCT-2020', '3-OCT-2020', 85, 5, 3, 'W') ;
+
+1 row created.
+
+SQL> INSERT INTO RESERVATION_sap
+  2  VALUES (1009, '1-OCT-2020', '4-OCT-2020', 28, 14, 2, 'W') ;
+
+1 row created.
+
+SQL> INSERT INTO RESERVATION_sap
+  2  VALUES (1010, '1-OCT-2020', '4-OCT-2020', 23, 28, 4, 'W') ;
+
+1 row created.
+
+SQL> 
+SQL> COMMIT ;
+
+Commit complete.
+
+SQL> 
+SQL> INSERT INTO RESDETAIL_sap
+  2  VALUES (1001, 224, 120) ;
+
+1 row created.
+
+SQL> INSERT INTO RESDETAIL_sap
+  2  VALUES (1001, 225, 125) ;
+
+1 row created.
+
+SQL> INSERT INTO RESDETAIL_sap
+  2  VALUES (1002, 305, 149) ;
+
+1 row created.
+
+SQL> INSERT INTO RESDETAIL_sap
+  2  VALUES (1003, 409, 99) ;
+
+1 row created.
+
+SQL> INSERT INTO RESDETAIL_sap
+  2  VALUES (1004, 320, 110) ;
+
+1 row created.
+
+SQL> INSERT INTO RESDETAIL_sap
+  2  VALUES (1004, 409, 105) ;
+
+1 row created.
+
+SQL> INSERT INTO RESDETAIL_sap
+  2  VALUES (1004, 321, 112) ;
+
+1 row created.
+
+SQL> INSERT INTO RESDETAIL_sap
+  2  VALUES (1005, 302, 139) ;
+
+1 row created.
+
+SQL> INSERT INTO RESDETAIL_sap
+  2  VALUES (1006, 501, 119) ;
+
+1 row created.
+
+SQL> INSERT INTO RESDETAIL_sap
+  2  VALUES (1006, 502, 119) ;
+
+1 row created.
+
+SQL> INSERT INTO RESDETAIL_sap
+  2  VALUES (1007, 302, 139) ;
+
+1 row created.
+
+SQL> INSERT INTO RESDETAIL_sap
+  2  VALUES (1008, 320, 89) ;
+
+1 row created.
+
+SQL> INSERT INTO RESDETAIL_sap
+  2  VALUES (1008, 321, 99) ;
+
+1 row created.
+
+SQL> INSERT INTO RESDETAIL_sap
+  2  VALUES (1009, 502, 129) ;
+
+1 row created.
+
+SQL> INSERT INTO RESDETAIL_sap
+  2  VALUES (1009, 409, 129) ;
+
+1 row created.
+
+SQL> INSERT INTO RESDETAIL_sap
+  2  VALUES (1010, 225, 109) ;
+
+1 row created.
+
+SQL> 
+SQL> COMMIT ;
+
+Commit complete.
+
+SQL> 
+SQL> 
+SQL> --Part 2B
+SQL> 
+SQL> SELECT * FROM   AGENTTYPE_sap ;
+
+AGENTTYPE       AGENTDESC                                                                                                                             
+--------------- --------------------                                                                                                                  
+FD              Front Desk                                                                                                                            
+T               Telephone                                                                                                                             
+RC              Online Res Center                                                                                                                     
+
+SQL> SELECT * FROM   CUSTTYPE_sap ;
+
+CUSTTYPE        CUSTDESC                                                                                                                              
+--------------- --------------------                                                                                                                  
+C               Corporate                                                                                                                             
+I               Individual                                                                                                                            
+
+SQL> SELECT * FROM   RATETYPE_sap ;
+
+RATETYPE        RATEDESC                                                                                                                              
+--------------- --------------------                                                                                                                  
+C               Corporate                                                                                                                             
+S               Standard                                                                                                                              
+W               Weekend                                                                                                                               
+
+SQL> SELECT * FROM   ROOMTYPE_sap ;
+
+ROOMTYPE        ROOMDESC                                                                                                                              
+--------------- --------------------                                                                                                                  
+K               King Bed                                                                                                                              
+D               2 Double Beds                                                                                                                         
+KS              King Suite                                                                                                                            
+
+SQL> SELECT * FROM   ROOM_sap ;
+
+   ROOMNUM ROOMTYPE                                                                                                                                   
+---------- ---------------                                                                                                                            
+       224 K                                                                                                                                          
+       225 D                                                                                                                                          
+       305 D                                                                                                                                          
+       409 D                                                                                                                                          
+       320 D                                                                                                                                          
+       321 K                                                                                                                                          
+       302 K                                                                                                                                          
+       501 KS                                                                                                                                         
+       502 KS                                                                                                                                         
+
+9 rows selected.
+
+SQL> SELECT * FROM   AGENT_sap ;
+
+   AGENTID AGENTFNAME           AGENTLNAME           AGENTTYPE                                                                                        
+---------- -------------------- -------------------- ---------------                                                                                  
+        20 Megan                Smith                FD                                                                                               
+         5 Janice               May                  T                                                                                                
+        14 John                 King                 RC                                                                                               
+        28 Ray                  Schultz              T                                                                                                
+
+SQL> SELECT * FROM   CUSTOMER_sap ;
+
+    CUSTID CUSTFNAME            CUSTLNAME             CUSTPHONE CUSTTYPE         LOYALTYID                                                            
+---------- -------------------- -------------------- ---------- --------------- ----------                                                            
+        85 Wesley               Tanner               8175551193 C                      323                                                            
+       100 Breanna              Rhodes               2145559191 I                      129                                                            
+        15 Jeff                 Miner                           I                                                                                     
+        77 Kim                  Jackson              8175554911 C                      210                                                            
+       119 Mary                 Vaughn               8175552334 I                      118                                                            
+        97 Chris                Mancha               4695553440 I                      153                                                            
+        28 Renee                Walker               2145559285 I                      135                                                            
+        23 Shelby               Day                             I                                                                                     
+
+8 rows selected.
+
+SQL> SELECT * FROM   RESERVATION_sap ;
+
+    RESNUM CHECKIN   CHECKOUT      CUSTID    AGENTID GUESTCOUNT RATETYPE                                                                              
+---------- --------- --------- ---------- ---------- ---------- ---------------                                                                       
+      1001 05-SEP-20 07-SEP-20         85         20          2 C                                                                                     
+      1002 01-SEP-20 10-SEP-20        100          5          4 S                                                                                     
+      1003 09-SEP-20 11-SEP-20         15         14          3 W                                                                                     
+      1004 12-SEP-20 14-SEP-20         77         28          4 C                                                                                     
+      1005 15-SEP-20 18-SEP-20        119         20          1 S                                                                                     
+      1006 24-SEP-20 26-SEP-20         97         14          2 W                                                                                     
+      1007 20-SEP-20 25-SEP-20        100         20          2 S                                                                                     
+      1008 01-OCT-20 03-OCT-20         85          5          3 W                                                                                     
+      1009 01-OCT-20 04-OCT-20         28         14          2 W                                                                                     
+      1010 01-OCT-20 04-OCT-20         23         28          4 W                                                                                     
+
+10 rows selected.
+
+SQL> SELECT * FROM   RESDETAIL_sap ;
+
+    RESNUM    ROOMNUM    RATEAMT                                                                                                                      
+---------- ---------- ----------                                                                                                                      
+      1001        224        120                                                                                                                      
+      1001        225        125                                                                                                                      
+      1002        305        149                                                                                                                      
+      1003        409         99                                                                                                                      
+      1004        320        110                                                                                                                      
+      1004        409        105                                                                                                                      
+      1004        321        112                                                                                                                      
+      1005        302        139                                                                                                                      
+      1006        501        119                                                                                                                      
+      1006        502        119                                                                                                                      
+      1007        302        139                                                                                                                      
+      1008        320         89                                                                                                                      
+      1008        321         99                                                                                                                      
+      1009        502        129                                                                                                                      
+      1009        409        129                                                                                                                      
+      1010        225        109                                                                                                                      
+
+16 rows selected.
+
+SQL> 
+SQL> 
+SQL> --Part 3 - updates and inserts
+SQL> 
+SQL> UPDATE CUSTOMER_sap
+  2  	SET CustPhone = '2145551234'
+  3   WHERE CustID = '100' ;
+
+1 row updated.
+
+SQL> 
+SQL> INSERT INTO CUSTOMER_sap
+  2  VALUES (120, 'Amanda', 'Green', NULL, 'I', NULL) ;
+
+1 row created.
+
+SQL> 
+SQL> COMMIT ;
+
+Commit complete.
+
+SQL> 
+SQL> INSERT INTO ROOMTYPE_sap
+  2  VALUES ('DS', 'Double Suite') ;
+
+1 row created.
+
+SQL> 
+SQL> COMMIT ;
+
+Commit complete.
+
+SQL> 
+SQL> INSERT INTO ROOM_sap
+  2  VALUES (226, 'KS') ;
+
+1 row created.
+
+SQL> INSERT INTO ROOM_sap
+  2  VALUES (227, 'D') ;
+
+1 row created.
+
+SQL> INSERT INTO ROOM_sap
+  2  VALUES (410, 'DS') ;
+
+1 row created.
+
+SQL> 
+SQL> COMMIT ;
+
+Commit complete.
+
+SQL> 
+SQL> UPDATE RESERVATION_sap
+  2  	SET CheckIn = '9-OCT-2020', CheckOut = '12-OCT-2020'
+  3   WHERE ResNum = 1010 ;
+
+1 row updated.
+
+SQL> 
+SQL> INSERT INTO RESERVATION_sap
+  2  VALUES (1011, '3-OCT-2020', '6-OCT-2020', 120, 5,3,'S') ;
+
+1 row created.
+
+SQL> 
+SQL> COMMIT;
+
+Commit complete.
+
+SQL> 
+SQL> INSERT INTO RESDETAIL_sap
+  2  VALUES (1011, 226, 159) ;
+
+1 row created.
+
+SQL> INSERT INTO RESDETAIL_sap
+  2  VALUES (1011, 227, 149) ;
+
+1 row created.
+
+SQL> INSERT INTO RESDETAIL_sap
+  2  VALUES (1003, 410, 129) ;
+
+1 row created.
+
+SQL> 
+SQL> UPDATE RESDETAIL_sap
+  2  	SET RateAmt = 129
+  3   WHERE ResNum = 1005 AND RoomNum = 302 ;
+
+1 row updated.
+
+SQL> 
+SQL>  COMMIT ;
+
+Commit complete.
+
+SQL> 
+SQL> --Part 4
+SQL> 
+SQL> SELECT * FROM   AGENTTYPE_sap
+  2  ORDER BY AgentType ;
+
+AGENTTYPE       AGENTDESC                                                                                                                             
+--------------- --------------------                                                                                                                  
+FD              Front Desk                                                                                                                            
+RC              Online Res Center                                                                                                                     
+T               Telephone                                                                                                                             
+
+SQL> 
+SQL> SELECT * FROM   CUSTTYPE_sap
+  2  ORDER BY CustType ;
+
+CUSTTYPE        CUSTDESC                                                                                                                              
+--------------- --------------------                                                                                                                  
+C               Corporate                                                                                                                             
+I               Individual                                                                                                                            
+
+SQL> 
+SQL> SELECT * FROM   RATETYPE_sap
+  2  ORDER BY RateType ;
+
+RATETYPE        RATEDESC                                                                                                                              
+--------------- --------------------                                                                                                                  
+C               Corporate                                                                                                                             
+S               Standard                                                                                                                              
+W               Weekend                                                                                                                               
+
+SQL> 
+SQL> SELECT * FROM   ROOMTYPE_sap
+  2  ORDER BY RoomType ;
+
+ROOMTYPE        ROOMDESC                                                                                                                              
+--------------- --------------------                                                                                                                  
+D               2 Double Beds                                                                                                                         
+DS              Double Suite                                                                                                                          
+K               King Bed                                                                                                                              
+KS              King Suite                                                                                                                            
+
+SQL> 
+SQL> SELECT * FROM   ROOM_sap
+  2  ORDER BY RoomNum ;
+
+   ROOMNUM ROOMTYPE                                                                                                                                   
+---------- ---------------                                                                                                                            
+       224 K                                                                                                                                          
+       225 D                                                                                                                                          
+       226 KS                                                                                                                                         
+       227 D                                                                                                                                          
+       302 K                                                                                                                                          
+       305 D                                                                                                                                          
+       320 D                                                                                                                                          
+       321 K                                                                                                                                          
+       409 D                                                                                                                                          
+       410 DS                                                                                                                                         
+       501 KS                                                                                                                                         
+       502 KS                                                                                                                                         
+
+12 rows selected.
+
+SQL> 
+SQL> SELECT * FROM   AGENT_sap
+  2  ORDER BY AgentID ;
+
+   AGENTID AGENTFNAME           AGENTLNAME           AGENTTYPE                                                                                        
+---------- -------------------- -------------------- ---------------                                                                                  
+         5 Janice               May                  T                                                                                                
+        14 John                 King                 RC                                                                                               
+        20 Megan                Smith                FD                                                                                               
+        28 Ray                  Schultz              T                                                                                                
+
+SQL> 
+SQL> SELECT * FROM   CUSTOMER_sap
+  2  ORDER BY CustID ;
+
+    CUSTID CUSTFNAME            CUSTLNAME             CUSTPHONE CUSTTYPE         LOYALTYID                                                            
+---------- -------------------- -------------------- ---------- --------------- ----------                                                            
+        15 Jeff                 Miner                           I                                                                                     
+        23 Shelby               Day                             I                                                                                     
+        28 Renee                Walker               2145559285 I                      135                                                            
+        77 Kim                  Jackson              8175554911 C                      210                                                            
+        85 Wesley               Tanner               8175551193 C                      323                                                            
+        97 Chris                Mancha               4695553440 I                      153                                                            
+       100 Breanna              Rhodes               2145551234 I                      129                                                            
+       119 Mary                 Vaughn               8175552334 I                      118                                                            
+       120 Amanda               Green                           I                                                                                     
+
+9 rows selected.
+
+SQL> 
+SQL> SELECT * FROM   RESERVATION_sap
+  2  ORDER BY ResNum ;
+
+    RESNUM CHECKIN   CHECKOUT      CUSTID    AGENTID GUESTCOUNT RATETYPE                                                                              
+---------- --------- --------- ---------- ---------- ---------- ---------------                                                                       
+      1001 05-SEP-20 07-SEP-20         85         20          2 C                                                                                     
+      1002 01-SEP-20 10-SEP-20        100          5          4 S                                                                                     
+      1003 09-SEP-20 11-SEP-20         15         14          3 W                                                                                     
+      1004 12-SEP-20 14-SEP-20         77         28          4 C                                                                                     
+      1005 15-SEP-20 18-SEP-20        119         20          1 S                                                                                     
+      1006 24-SEP-20 26-SEP-20         97         14          2 W                                                                                     
+      1007 20-SEP-20 25-SEP-20        100         20          2 S                                                                                     
+      1008 01-OCT-20 03-OCT-20         85          5          3 W                                                                                     
+      1009 01-OCT-20 04-OCT-20         28         14          2 W                                                                                     
+      1010 09-OCT-20 12-OCT-20         23         28          4 W                                                                                     
+      1011 03-OCT-20 06-OCT-20        120          5          3 S                                                                                     
+
+11 rows selected.
+
+SQL> 
+SQL> SELECT * FROM   RESDETAIL_sap
+  2  ORDER BY ResNum, RoomNum ;
+
+    RESNUM    ROOMNUM    RATEAMT                                                                                                                      
+---------- ---------- ----------                                                                                                                      
+      1001        224        120                                                                                                                      
+      1001        225        125                                                                                                                      
+      1002        305        149                                                                                                                      
+      1003        409         99                                                                                                                      
+      1003        410        129                                                                                                                      
+      1004        320        110                                                                                                                      
+      1004        321        112                                                                                                                      
+      1004        409        105                                                                                                                      
+      1005        302        129                                                                                                                      
+      1006        501        119                                                                                                                      
+      1006        502        119                                                                                                                      
+      1007        302        139                                                                                                                      
+      1008        320         89                                                                                                                      
+      1008        321         99                                                                                                                      
+      1009        409        129                                                                                                                      
+      1009        502        129                                                                                                                      
+      1010        225        109                                                                                                                      
+      1011        226        159                                                                                                                      
+      1011        227        149                                                                                                                      
+
+19 rows selected.
+
+SQL> 
+SQL> spool off
